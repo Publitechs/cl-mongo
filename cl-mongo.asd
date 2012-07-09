@@ -17,7 +17,8 @@
 	       :lisp-unit
 	       :parenscript
 	       :split-sequence
-	       :usocket)
+	       :usocket
+               :closer-mop)
   :serial t
   :components 
   ((:module "src"

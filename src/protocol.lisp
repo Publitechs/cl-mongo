@@ -150,22 +150,25 @@
 
 
 
-(defgeneric mongo-delete (collection object) 
+(defgeneric mongo-delete (collection object &key single) 
   (:documentation "delete a mongo object"))
 
-(defmethod mongo-delete ( (collection string) (selector array) )
-  (let ((arr (make-octet-vector 50)))
+(defmethod mongo-delete ( (collection string) (selector array) &key (single t))
+  (let ((arr (make-octet-vector 50)) (zero 0))
+        (flags (if single
+                   0
+                   (setf (ldb (byte 1 0) zero) 1)))
     (add-octets (int32-to-octet 0) arr)              ; length
     (add-octets (int32-to-octet 0) arr)              ; request id
     (add-octets (int32-to-octet 0) arr)              ; response to
     (add-octets (int32-to-octet +mongo-delete+) arr) ; opcode
     (add-octets (int32-to-octet 0) arr)              ; zero
     (add-octets (string-to-null-terminated-octet collection) arr) ; collection name
-    (add-octets (int32-to-octet 0) arr)                 ; zero
+    (add-octets (int32-to-octet flags) arr)                 ; zero
     (add-octets selector arr)                           ; selector
-    (set-octets 0 (int32-to-octet (length arr) ) arr)   ; set length
+    (set-octets 0 (int32-to-octet (length arr)) arr)   ; set length
     arr))
 
-(defmethod mongo-delete ( (collection string) (object document) )
+(defmethod mongo-delete ( (collection string) (object document) &key single)
   (mongo-delete collection (bson-encode "_id" (_id object)))) ; encode unique id 
 

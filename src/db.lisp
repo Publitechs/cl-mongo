@@ -203,28 +203,28 @@ You can enter a list of documents. In that the server will be contacted to delet
 It may be more efficient to run a delete script on the server side.
 "))
 
-(defmethod db.delete ( (collection t) (document (eql nil)) &key (mongo nil) ))
+(defmethod db.delete ( (collection t) (document (eql nil)) &key (mongo nil) (single t)))
 
 
-(defmethod db.delete ( (collection string) (document document) &key (mongo nil))
+(defmethod db.delete ( (collection string) (document document) &key (mongo nil) (single t))
   (let ((mongo (or mongo (mongo) )))
     (mongo-message mongo (mongo-delete 
 			  (full-collection-name mongo collection)  
-			  document ) :timeout 0)))
+			  document :single single) :timeout 0)))
 
-(defmethod db.delete ( (collection string) (documents cons ) &key (mongo nil))
+(defmethod db.delete ( (collection string) (documents cons ) &key (mongo nil) (single t))
   (dolist (doc documents)
     (db.delete collection doc :mongo mongo)))
 
-(defmethod db.delete ( (collection string) (document kv-container) &key (mongo nil))
+(defmethod db.delete ( (collection string) (document kv-container) &key (mongo nil) (single t))
   (let ((mongo (or mongo (mongo) )))
     (mongo-message mongo (mongo-delete (full-collection-name mongo collection)  
-				       (bson-encode-container document )) :timeout 0)))
+				       (bson-encode-container document) :single single) :timeout 0)))
 
-(defmethod db.delete ( (collection string) (kv pair) &key (mongo nil))
+(defmethod db.delete ( (collection string) (kv pair) &key (mongo nil) (single t))
   (let ((mongo (or mongo (mongo) )))
     (mongo-message mongo (mongo-delete (full-collection-name mongo collection)  
-				       (bson-encode (pair-key kv) (pair-value kv))) :timeout 0)))
+				       (bson-encode (pair-key kv) (pair-value kv))  :single single) :timeout 0)))
 
 ;
 ; key -> (string asc)
@@ -433,4 +433,3 @@ all the documents in the collection.
 
 ;;(db.find "$cmd" (kv (kv "count" "foo")  (kv "query" (kv nil nil)) (kv "fields" (kv nil nil))))
 ;;(db.find "foo" (kv (kv "query" (kv nil nil)) (kv "orderby" (kv "k" 1)) ) :limit 0)
-
