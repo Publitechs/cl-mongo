@@ -18,12 +18,15 @@
 	       :parenscript
 	       :split-sequence
 	       :usocket
-               :closer-mop)
+               :closer-mop
+               :cl-mongo-id
+               :alexandria)
   :serial t
   :components 
   ((:module "src"
     :serial t
     :components ((:file "packages")
+                 (:file "utils")
 		 (:file "octets")
 		 (:file "pair")
 		 (:file "encode-float")

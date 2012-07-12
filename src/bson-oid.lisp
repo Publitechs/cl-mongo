@@ -7,7 +7,7 @@
 (defclass bson-oid ()
   ((id :reader id :initarg :oid))
   (:default-initargs
-   :oid (uuid:uuid-to-byte-array (uuid:make-v4-uuid))))
+   :oid (cl-mongo-id:oid)))
 
 (defun make-bson-oid( &key (oid nil oid-supplied-p))
   (if oid-supplied-p
@@ -15,9 +15,9 @@
       (make-instance 'bson-oid)))
 
 (defmethod print-object ((bson-oid bson-oid) stream)
-  (format stream "~S [~A]" (type-of bson-oid) 
+  (format stream "_id(~a)"
 	  (if (slot-boundp bson-oid 'id) 
-	      (id bson-oid)
+	      (cl-mongo-id:oid-str (id bson-oid))
 	      "no id set..")))
 
 (defgeneric _id (bson-oid) 
@@ -25,5 +25,8 @@
    "return a 12 byte array, irrespective of the internals of bson-oid, which may have a larger  array")) 
 
 (defmethod _id ((bson-oid bson-oid))
-  (subseq (id bson-oid) 0 12))
+  (id bson-oid))
+
+(defmethod _id ((bson-oid-str string))
+  (make-bson-oid :oid (cl-mongo-id:oid (subseq bson-oid-str 4 28))))
 

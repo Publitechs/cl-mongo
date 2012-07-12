@@ -72,12 +72,12 @@
 (defclass document ()
   ((elements  :initarg :elements :accessor elements)
    (_local_id :initarg :local    :reader _local)
-   (_id       :initarg :oid      :reader _id)
+   (_id       :allocation :field :initarg :_id :reader _id)
    (saved :initarg :saved :reader saved))
   (:default-initargs
    :local t
    :saved nil
-   :oid (make-bson-oid))
+   :_id (make-bson-oid))
   (:metaclass document-class)
   (:documentation "document
 Document class. A document consists of key/value pairs stored in a internal hash table plus 
