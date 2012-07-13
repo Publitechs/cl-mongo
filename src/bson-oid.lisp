@@ -15,7 +15,7 @@
       (make-instance 'bson-oid)))
 
 (defmethod print-object ((bson-oid bson-oid) stream)
-  (format stream "_id(~a)"
+  (format stream "\"_id(~a)\""
 	  (if (slot-boundp bson-oid 'id) 
 	      (cl-mongo-id:oid-str (id bson-oid))
 	      "no id set..")))
