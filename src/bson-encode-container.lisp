@@ -11,8 +11,8 @@
   (bson-encode nil nil :array array))
 
 (defmethod bson-encode-container ( (container document) &key (array nil) (size 10) )
-  (setf (gethash "_id" (elements container)) (_id container))
-  (bson-encode-container (elements container) :array array :size size))
+  (setf (gethash "_id" (_elements container)) (_id container))
+  (bson-encode-container (_elements container) :array array :size size))
 
 (defmethod bson-encode-container ( (container hash-table) &key (array nil) (size nil) )
   (let* ((size (or size 10))

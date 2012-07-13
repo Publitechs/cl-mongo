@@ -96,7 +96,7 @@ ok in mosty cases. See nd for an alternative.
 	   (pp-doc ( d )
 	     (br+)
 	     (unless (_local d) (pp* (_id d)))
-	     (pp*  (elements d) )
+	     (pp*  (_elements d) )
 	     (br-) )
 
 	   (pp-ht ( ht )

@@ -134,5 +134,5 @@ The server will assign a unique is if a list of key-value pairs is saved."))
   kv)
 
 (defmethod kv->ht ( (kv-container kv-container) )
-  (elements (kv->doc kv-container)))
+  (_elements (kv->doc kv-container)))
 
