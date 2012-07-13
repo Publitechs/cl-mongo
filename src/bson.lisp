@@ -130,15 +130,17 @@
       (bson-encode-array key :array array :type +bson-data-oid+ :encoder #'encode-value))))
 
 (defmethod bson-encode ( (key string) (value string) &key (array nil) (type +bson-data-string+) )
-  (let ((array (or array (make-octet-vector +default-array-size+))))
-    (labels ((encode-value (array)
-	       (let ((enc-val (string-to-null-terminated-octet value)))
-		 ;; length of the value string
-		 (add-octets (int32-to-octet (length enc-val)) array)   
-		 ;; value string, null terminated
+  (if (string-starts-with-p "_id(" value) ;;decode bson-oid properly
+      (bson-encode key (_id value) :array array :type +bson-data-oid+)
+      (let ((array (or array (make-octet-vector +default-array-size+))))
+        (labels ((encode-value (array)
+                   (let ((enc-val (string-to-null-terminated-octet value)))
+                     ;; length of the value string
+                     (add-octets (int32-to-octet (length enc-val)) array)   
+                     ;; value string, null terminated
 		 (add-octets enc-val array)))) 
-      (bson-encode-array key :array array :type type :encoder #'encode-value))))
-
+          (bson-encode-array key :array array :type type :encoder #'encode-value)))))
+  
 (defmethod bson-encode( (key string) (value integer) &key (array nil)) 
   (let ((array (or array (make-octet-vector +default-array-size+))))
     (labels ((encode-value32(array)
