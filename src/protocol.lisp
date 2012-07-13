@@ -126,14 +126,14 @@
     (set-octets 0 (int32-to-octet (length arr) ) arr)      ; set message length
     arr))
 
-(defgeneric mongo-reply (array &key finalize) 
-  (:documentation "extract reply parameters"))
+;(defgeneric mongo-reply (array &key finalize) 
+;  (:documentation "extract reply parameters"))
 
-(defmethod mongo-reply ( (array (eql nil) ) &key finalize)
-  (declare (ignore finalize))
-  )
+;(defmethod mongo-reply ( (array (eql nil) ) &key finalize)
+;  (declare (ignore finalize))
+;  )
 
-(defun mongo-reply ( array )
+(defun mongo-reply ( array &key doc-class)
   (labels ((header (array)
 	     (let ((lst ()))
 	       (push (octet-to-int32.1 array 0)   lst)   ; length
@@ -146,7 +146,7 @@
 	       (push (octet-to-int32.1 array 32)  lst)   ; returned
 	       (nreverse lst))))
     (let ((head (header array)))
-      (values head  (bson-decode (car head) 36 (nth 7 head)  array)))))
+      (values head  (bson-decode (car head) 36 (nth 7 head)  array :doc-class doc-class)))))
 
 
 

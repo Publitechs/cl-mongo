@@ -13,7 +13,7 @@
       )
     eol))
 
-(defun bson-decode (totlen pos docs array &key (container #'ht->document.1 ) ) 
+(defun bson-decode (totlen pos docs array &key (container #'ht->document.1 ) doc-class ) 
   (block nil
     (let ((lst () ) )
       (when (zerop docs) (return lst))
@@ -194,7 +194,7 @@
 		    ) ;; end of condition on type
 		(when (< pos end) (go get-key-value))) )
 	     (incf pos)
-	     (push (funcall container ht) lst) )) 
+	     (push (funcall container ht doc-class) lst) )) 
 	 (decf docs)
 	 (when (= totlen pos) (return (nreverse lst)))
 	 (when (zerop docs)   (return (nreverse lst)))

@@ -26,7 +26,7 @@ mongo documentation.
 "))
 
 (defmethod db.find ( (collection string) (kv t) 
-			 &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil) )
+			 &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil) (doc-class 'document))
   (let ((mongo (or mongo (mongo))))
     (labels ((query ()
 	       (mongo-message mongo (mongo-query 
@@ -35,40 +35,40 @@ mongo documentation.
 				     :skip skip 
 				     :selector (bson-encode-container (expand-selector selector))
 				     :options options))))
-      (multiple-value-bind (header docs) (mongo-reply (query) )
+      (multiple-value-bind (header docs) (mongo-reply (query) :doc-class doc-class )
 	(list (append header (list collection)) docs)))))
 
 
 (defmethod db.find ( (collection symbol) (kv t) 
-		    &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil) )
+		    &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil)  (doc-class 'document))
   (db.find (string-downcase collection) kv 
-		    :mongo mongo :options options :skip skip :limit limit :selector selector ))
+		    :mongo mongo :options options :skip skip :limit limit :selector selector  :doc-class doc-class ))
 
 
 (defmethod db.find ( (collection string) (kv (eql :all)) 
-		    &key (mongo nil) (options 0) (skip 0) (limit 0) (selector nil) )
+		    &key (mongo nil) (options 0) (skip 0) (limit 0) (selector nil)  (doc-class 'document))
   (db.find collection (bson-encode "query" (kv nil nil))
-	   :mongo mongo :options options :skip skip :limit limit :selector selector ))
+	   :mongo mongo :options options :skip skip :limit limit :selector selector  :doc-class doc-class ))
   
 (defmethod db.find ( (collection string) (kv integer) 
-		    &key (mongo nil) (options 0) (skip 0) (selector nil) )
+		    &key (mongo nil) (options 0) (skip 0) (selector nil)  (doc-class 'document))
   (db.find collection (bson-encode nil nil)
-	   :mongo mongo :options options :skip skip :limit kv :selector selector ))
+	   :mongo mongo :options options :skip skip :limit kv :selector selector  :doc-class doc-class ))
 
 (defmethod db.find ( (collection string) (kv pair) 
-		    &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil) )
+		    &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil)  (doc-class 'document))
   (db.find collection (bson-encode (pair-key kv) (pair-value kv))
-	   :mongo mongo :options options :skip skip :limit limit :selector selector ))
+	   :mongo mongo :options options :skip skip :limit limit :selector selector  :doc-class doc-class ))
 
 (defmethod db.find ( (collection string) (kv hash-table) 
-		    &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil) )
+		    &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil)  (doc-class  'document))
   (db.find collection (bson-encode-container kv)
-		    :mongo mongo :options options :skip skip :limit limit :selector selector ))
+		    :mongo mongo :options options :skip skip :limit limit :selector selector  :doc-class doc-class ))
 
 (defmethod db.find ( (collection string) (kv kv-container) 
-		    &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil) )
+		    &key (mongo nil) (options 0) (skip 0) (limit 1) (selector nil)  (doc-class  'document))
   (db.find collection (bson-encode-container kv)
-		    :mongo mongo :options options :skip skip :limit limit :selector selector ))
+		    :mongo mongo :options options :skip skip :limit limit :selector selector :doc-class doc-class ))
 
 (defmacro db.sort (collection query &rest args) 
   "sort macro : Takes the same arguments and keywords as db.find but converts the query 
