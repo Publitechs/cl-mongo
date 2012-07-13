@@ -1,8 +1,8 @@
 (in-package #:cl-user)
 
 (defpackage #:cl-mongo
-  (:use #:common-lisp #:babel #:uuid #:usocket #:closer-mop)
-  (:shadowing-import-from :closer-mop :defgeneric :defmethod :standard-generic-function)
+  (:use #:closer-common-lisp #:babel #:uuid #:usocket)
+  ;(:shadowing-import-from :closer-mop :defgeneric :defmethod :standard-generic-function)
   (:export
 
    ;;
