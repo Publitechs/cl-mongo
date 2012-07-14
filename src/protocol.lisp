@@ -154,10 +154,11 @@
   (:documentation "delete a mongo object"))
 
 (defmethod mongo-delete ( (collection string) (selector array) &key (single t))
-  (let ((arr (make-octet-vector 50)) (zero 0))
-        (flags (if single
-                   0
-                   (setf (ldb (byte 1 0) zero) 1)))
+  (let* ((arr (make-octet-vector 50))
+         (zero 0)
+         (flags (if single
+                    0
+                    (setf (ldb (byte 1 0) zero) 1))))
     (add-octets (int32-to-octet 0) arr)              ; length
     (add-octets (int32-to-octet 0) arr)              ; request id
     (add-octets (int32-to-octet 0) arr)              ; response to
