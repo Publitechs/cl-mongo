@@ -167,3 +167,5 @@
 	       ))
       (bson-encode-array key :array array :type +bson-data-regex+ :encoder #'encode-value))))
 
+(defmethod bson-encode ( (key symbol) (value t) &key )
+  (bson-encode (to-field-name key) value))

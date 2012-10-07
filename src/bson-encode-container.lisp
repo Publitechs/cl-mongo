@@ -44,7 +44,3 @@
 
 (defmethod bson-encode ( (key string) (value kv-container) &key )
   (bson-encode key (bson-encode-container value )))
-
-
-(defmethod bson-encode ( (key string) (value pair) &key )
-  (bson-encode key (bson-encode-container value)))
